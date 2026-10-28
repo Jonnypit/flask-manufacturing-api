@@ -7,14 +7,14 @@ bp = Blueprint("orders", __name__)
 @bp.route("/orders", methods=["GET"])
 def get_orders():
     orders = Order.query.all()
-    return jsonify([o.__dict__ for o in orders])
+    return jsonify([o.to_dict() for o in orders])
 
 @bp.route("/orders/<int:order_id>", methods=["GET"])
 def get_order(order_id):
     order = Order.query.get(order_id)
     if order is None:
         return jsonify({"error": "Order not found"}), 404
-    return jsonify(order.__dict__)
+    return jsonify(order.to_dict())
 
 @bp.route("/orders", methods=["POST"])
 def create_order():
@@ -27,7 +27,7 @@ def create_order():
     )
     db.session.add(new_order)
     db.session.commit()
-    return jsonify(new_order.__dict__), 201
+    return jsonify(new_order.to_dict()), 201
 
 @bp.route("/orders/<int:order_id>", methods=["PUT"])
 def update_order(order_id):
@@ -40,7 +40,7 @@ def update_order(order_id):
     order.status         = data["status"]
     order.date           = data["date"]
     db.session.commit()
-    return jsonify(order.__dict__)
+    return jsonify(order.to_dict())
 
 @bp.route("/orders/<int:order_id>", methods=["DELETE"])
 def delete_order(order_id):

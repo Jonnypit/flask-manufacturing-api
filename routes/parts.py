@@ -7,14 +7,14 @@ bp = Blueprint("parts", __name__)
 @bp.route("/parts", methods=["GET"])
 def get_parts():
     parts = Part.query.all()
-    return jsonify([p.__dict__ for p in parts])
+    return jsonify([p.to_dict() for p in parts])
 
 @bp.route("/parts/<int:part_id>", methods=["GET"])
 def get_part(part_id):
     part = Part.query.get(part_id)
     if part is None:
         return jsonify({"error": "Part not found"}), 404
-    return jsonify(part.__dict__)
+    return jsonify(part.to_dict())
 
 @bp.route("/parts", methods=["POST"])
 def create_part():
@@ -27,7 +27,7 @@ def create_part():
     )
     db.session.add(new_part)
     db.session.commit()
-    return jsonify(new_part.__dict__), 201
+    return jsonify(new_part.to_dict()), 201
 
 @bp.route("/parts/<int:part_id>", methods=["PUT"])
 def update_part(part_id):
@@ -40,7 +40,7 @@ def update_part(part_id):
     part.quantity   = data["quantity"]
     part.price      = data["price"]
     db.session.commit()
-    return jsonify(part.__dict__)
+    return jsonify(part.to_dict())
 
 @bp.route("/parts/<int:part_id>", methods=["DELETE"])
 def delete_part(part_id):
